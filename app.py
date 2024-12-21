@@ -20,11 +20,10 @@ st.sidebar.title("Image Pro")
 st.sidebar.subheader("Navigation")
 
 pages = [
-    "Basic Analysis",
-    "Translation, Rotation, Transpose & Flip",
-    "Scaling, Resizing, Interpolation & Cropping",
-    "Drawing on Images",
-    "Noise Removal & Filters"
+    "Overview",
+    "Transformations",
+    "Scaling",
+    "Denoising"
 ]
 selected_page = st.sidebar.radio("**Select A Technique:**", pages)
 
@@ -54,8 +53,9 @@ else:
     # Navigation logic
     image = st.session_state.image_data
 
-    if selected_page == "Basic Analysis":
-        st.title("Basic Image Analysis")
+    if selected_page == "Overview":
+        st.title("Overview")
+        st.write("Here is the general information about the image.")
         height, width, depth = image.shape
         st.write(f"Height: {height} pixels")
         st.write(f"Width: {width} pixels")
@@ -63,9 +63,8 @@ else:
 
         # Create histograms for the Red, Green, and Blue channels
         colors = ['blue', 'green', 'red']
-        channels = cv2.split(image)  # Split the image into its BGR channels
+        channels = cv2.split(image) 
 
-        # Create an empty list for the plotly traces
         traces = []
 
         # Plot histograms for each channel
@@ -107,8 +106,8 @@ else:
         hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
         st.bar_chart(hist.flatten())
 
-    elif selected_page == "Translation, Rotation, Transpose & Flip":
-        st.title("Translation, Rotation, Transpose & Flip")
+    elif selected_page == "Transformations":
+        st.title("Transformations")
         st.write("""
                     In image processing, **translation, rotation, transpose**, and **flip** are common geometric transformations that manipulate the position and orientation of an image. 
                     These transformations are essential for various tasks, such as image augmentation, alignment, and data manipulation in computer vision.""")
@@ -218,15 +217,15 @@ else:
             st.image(flipped_image, caption=f"Flipped Image ({flip_option})", channels="BGR", use_container_width=True)
 
 
-    elif selected_page == "Scaling, Resizing, Interpolation & Cropping":
-        st.title("Scaling, Resizing, Interpolation & Cropping")
-
+    elif selected_page == "Scaling":
+        st.title("Scaling")
+        st.write("Scaling consists of different image processing techniques that adjusts the size of an image. They include *rescaling, resizing, cropping* and *interpolation*.")
         # Scaling
-        st.subheader("1. Scaling")
+        st.subheader("1. Rescaling")
         st.write("""
-                *Definition*: Scaling changes the size of an image by increasing or decreasing its dimensions proportionally. It is essentially resizing with a focus on maintaining the aspect ratio.
+                *Definition*: Rescaling changes the size of an image by increasing or decreasing its dimensions proportionally. It is essentially resizing with a focus on maintaining the aspect ratio.
                 
-                *How It Works*: Scaling works by multiplying the original dimensions (width and height) by a scaling factor:
+                *How It Works*: Rescaling works by multiplying the original dimensions (width and height) by a scaling factor:
                 ```
                 New Width = Original Width × Scale Factor
                 New Height = Original Height × Scale Factor
@@ -237,20 +236,32 @@ else:
                 
                 *Use Case*: Scaling is used to make images smaller for faster processing or larger for better visibility without worrying about exact dimensions.
                 """)
-        fx, fy = st.slider("Scaling Factors (fx, fy)", 0.1, 2.0, (1.0, 1.0))
-        scaled_image = cv2.resize(image, None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
+        fx, fy = st.slider("Rescaling Factors (fx, fy)", 0.1, 2.0, (1.0, 1.0))
+        rescaled_image = cv2.resize(image, None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
         
         col1, col2 = st.columns(2)
         with col1:
             st.image(image, caption="Original Image", channels="BGR", use_container_width=True)
 
         with col2:
-            st.image(scaled_image, caption=f"Scaled Image by {fx,fy}", channels="BGR", use_container_width=True)
+            st.image(rescaled_image, caption=f"Scaled Image by {fx,fy}", channels="BGR", use_container_width=True)
             
         
 
         # Resizing
-        st.subheader("Resizing")
+        st.subheader("2. Resizing")
+        st.write("""
+                *Definition*: Resizing explicitly changes the dimensions (width and height) of an image to specific values, regardless of its original aspect ratio.
+                
+                *How It Works*: The image is adjusted to fit the new dimensions, either preserving or distorting the original aspect ratio based on the resizing method.
+                
+                *Methods*:
+                - *Keep Aspect Ratio*: Resize dimensions proportionally to maintain the original shape of the image.
+                - *Ignore Aspect Ratio*: Resize to the specified dimensions, potentially distorting the image.
+                
+                *Use Case*: Resizing is crucial for preparing images for machine learning models, which often require fixed-size inputs.
+                """)
+        
         new_width = st.slider("New Width", 10, 1000, image.shape[1])
         new_height = st.slider("New Height", 10, 1000, image.shape[0])
         resized_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
@@ -262,8 +273,64 @@ else:
         with col2:
             st.image(resized_image, caption=f"Resized Image to {new_width, new_height}", channels="BGR", use_container_width=True)
         
+        # Interpolation
+        st.header("3. Interpolation")
+        st.write("""
+                *Definition*: Interpolation is the method used to estimate pixel values when resizing or scaling an image, especially for non-integer scaling factors.
+                
+                *How It Works*: Since resizing often involves creating new pixels, interpolation calculates their values based on nearby pixels. Different algorithms achieve this in various ways:
+                - *Nearest-Neighbor Interpolation*: Assigns the value of the nearest pixel to the new pixel. Simple but can result in blocky images.
+                - *Bilinear Interpolation*: Averages the values of the 2×2 surrounding pixels to estimate the new pixel value. Produces smoother images.
+                - *Bicubic Interpolation*: Considers the 4×4 surrounding pixels for interpolation, producing even smoother results than bilinear.
+                - *Lanczos Interpolation*: Uses a sinc function for high-quality resizing, particularly for downscaling.
+                
+                *Use Case*: Interpolation is necessary to prevent image distortion during resizing or scaling.
+
+                """)
+        
+        # Choose interpolation method
+        interpolation_method = st.selectbox(
+            "**Choose Interpolation Method:**",
+            ["Nearest Neighbor", "Bilinear", "Bicubic", "Lanczos"]
+        )
+
+        new_width = st.slider("New Width:", 50, 800, image.shape[1] // 2)
+        new_height = st.slider("New Height:", 50, 800, image.shape[0] // 2)
+    
+        # Map selection to OpenCV constants
+        interpolation_map = {
+            "Nearest Neighbor": cv2.INTER_NEAREST,
+            "Bilinear": cv2.INTER_LINEAR,
+            "Bicubic": cv2.INTER_CUBIC,
+            "Lanczos": cv2.INTER_LANCZOS4
+        }
+        chosen_interpolation = interpolation_map[interpolation_method]
+
+        # Resize the image
+        resized_image = cv2.resize(image, (new_width, new_height), interpolation=chosen_interpolation)
+
+        # Display the resized image
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(image, caption="Original Image", channels="BGR", use_container_width=True)
+
+        with col2:
+            st.image(resized_image, caption=f"Resized Image ({interpolation_method})", channels="BGR", use_container_width=True)
+            
         # Cropping
-        st.subheader("Cropping")
+        st.subheader("4. Cropping")
+        st.write("""
+                *Definition*: Cropping removes unwanted outer areas of an image to focus on a specific region of interest (ROI).
+                
+                *How It Works*: You specify a rectangular region within the image, and only the pixels inside that rectangle are retained. The rest are discarded.
+                
+                *Use Case*: Cropping is used to zoom into specific parts of an image, remove unnecessary areas, or prepare smaller subregions for analysis.
+                
+                *Advantages*: It doesn’t alter the resolution or pixel quality of the retained portion of the image.
+                
+                *Drawbacks*: Cropping reduces the size of the image, potentially losing important contextual information outside the cropped area.
+
+                """)
         x1, x2 = st.slider("Crop X-Axis Range", 0, image.shape[1], (0, image.shape[1]))
         y1, y2 = st.slider("Crop Y-Axis Range", 0, image.shape[0], (0, image.shape[0]))
         cropped_image = image[y1:y2, x1:x2]
@@ -275,46 +342,64 @@ else:
         with col2:
             st.image(cropped_image, caption="Cropped Image", channels="BGR", use_container_width=True)
 
-    elif selected_page == "Drawing on Images":
-        st.title("Drawing on Images")
-
-        # Drawing shapes
-        st.subheader("Draw Shapes")
-        shape_option = st.radio("Shape", ["Rectangle", "Circle", "Line"])
-        color = st.color_picker("Pick a Color", "#00f900")
-        color_rgb = tuple(int(color.lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
-
-        if shape_option == "Rectangle":
-            x1, y1 = st.slider("Top-Left Corner (x1, y1)", 0, 500, (50, 50))
-            x2, y2 = st.slider("Bottom-Right Corner (x2, y2)", 0, 500, (200, 200))
-            temp_image = image.copy()
-            cv2.rectangle(temp_image, (x1, y1), (x2, y2), color_rgb, -1)
-            st.image(temp_image, caption="Rectangle", channels="BGR", use_container_width=True)
-
-        elif shape_option == "Circle":
-            cx, cy = st.slider("Center (cx, cy)", 0, 500, (100, 100))
-            radius = st.slider("Radius", 1, 200, 50)
-            temp_image = image.copy()
-            cv2.circle(temp_image, (cx, cy), radius, color_rgb, -1)
-            st.image(temp_image, caption="Circle", channels="BGR", use_container_width=True)
-
-        elif shape_option == "Line":
-            x1, y1 = st.slider("Start Point (x1, y1)", 0, 500, (50, 50))
-            x2, y2 = st.slider("End Point (x2, y2)", 0, 500, (200, 200))
-            temp_image = image.copy()
-            cv2.line(temp_image, (x1, y1), (x2, y2), color_rgb, 5)
-            st.image(temp_image, caption="Line", channels="BGR", use_container_width=True)
-
-    elif selected_page == "Noise Removal & Filters":
-        st.title("Noise Removal & Filters")
+    elif selected_page == "Denoising":
+        st.title("Denoising")
 
         # Noise Removal
-        st.subheader("Denoising")
-        denoised_image = cv2.fastNlMeansDenoisingColored(image, None, 10, 10, 7, 21)
-        st.image(denoised_image, caption="Denoised Image", channels="BGR", use_container_width=True)
+        st.write("""
+                Denoising in image processing refers to the removal of noise from an image. Noise typically appears as random variations in brightness or color that degrade the image's quality. Noise can originate from various sources, such as low-light conditions, electronic interference, or sensor imperfections.
+                
+                Below are some of the common denoising techniques.
+                """)
 
-        # Gaussian Blur
-        st.subheader("Gaussian Blur")
-        ksize = st.slider("Kernel Size", 1, 21, 5, step=2)
-        blurred_image = cv2.GaussianBlur(image, (ksize, ksize), 0)
-        st.image(blurred_image, caption="Blurred Image", channels="BGR", use_container_width=True)
+        # Averaging
+        st.subheader("1. Averaging")
+        st.write("Averaging replaces each pixel's value with the average of its neighbors. It reduces noise but may blur the image.")
+        
+        kernel_size_avg = st.slider("**Kernel Size for Averaging (Odd values only)**:", 3, 15, 5, step=2)
+        averaged_image = cv2.blur(image, (kernel_size_avg, kernel_size_avg))
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(image, caption="Original Image", channels="BGR", use_container_width=True)
+
+        with col2:
+            st.image(averaged_image, caption="Averaged Image", channels="BGR", use_container_width=True)
+
+        # Median Filtering
+        st.subheader("2. Median Filtering")
+        st.write("Median Filtering replaces each pixel's value with the median value of the surrounding pixels. It is excellent for removing 'salt-and-pepper' noise while preserving edges.")
+        
+        kernel_size_med = st.slider("**Kernel Size for Median Filtering (Odd values only)**:", 3, 15, 5, step=2)
+        median_filtered_image = cv2.medianBlur(image, kernel_size_med)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(image, caption="Original Image", channels="BGR", use_container_width=True)
+
+        with col2:
+            st.image(median_filtered_image, caption="Median Filtered Image", channels="BGR", use_container_width=True)
+
+        # Gaussian Filtering
+        st.subheader("3. Guassian Filtering")
+        st.write("It is a type of smoothing that uses a Gaussian kernel to reduce noise. Weighted averaging ensures smoother results without drastic edge distortion.")
+        
+        kernel_size_gauss = st.slider("**Kernel Size for Gaussian Filtering (Odd values only)**:", 3, 15, 5, step=2)
+        gaussian_filtered_image = cv2.GaussianBlur(image, (kernel_size_gauss, kernel_size_gauss), 0)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(image, caption="Original Image", channels="BGR", use_container_width=True)
+
+        with col2:
+            st.image(gaussian_filtered_image, caption="Gaussian Filtered Image", channels="BGR", use_container_width=True)
+
+        # Non-Local Means (NLM) Filtering
+        st.subheader("4. Non-Local Means (NLM) Filtering")
+        st.write("This is an advanced method that denoises based on pixel similarity across the entire image, not just local neighborhoods. Balances noise reduction with edge and detail preservation.")
+        
+        h_nlm = st.slider("**Denoising Strength (h) for NLM**:", 5, 50, 10)
+        nlm_filtered_image = cv2.fastNlMeansDenoisingColored(image, None, h_nlm, h_nlm, 7, 21)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(image, caption="Original Image", channels="BGR", use_container_width=True)
+
+        with col2:
+            st.image(nlm_filtered_image, caption="Non-Local Means (NLM) Filtered Image", channels="BGR", use_container_width=True)
