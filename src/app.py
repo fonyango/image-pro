@@ -95,7 +95,6 @@ else:
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         
         col1, col2 = st.columns(2)
-
         with col1:
             st.image(image, caption="Original Image", channels="BGR", use_container_width=True)
 
