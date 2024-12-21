@@ -186,7 +186,7 @@ else:
             st.image(transposed_image, caption="Transposed Image", channels="BGR", use_container_width=True)
 
         # Flip
-        st.subheader("Flip")
+        st.subheader("4. Flip")
         st.write("""
                 *Definition*: Flipping an image refers to reflecting it along a specific axis (horizontal or vertical). There are two common types of flips:
                 
@@ -222,7 +222,21 @@ else:
         st.title("Scaling, Resizing, Interpolation & Cropping")
 
         # Scaling
-        st.subheader("Scaling")
+        st.subheader("1. Scaling")
+        st.write("""
+                *Definition*: Scaling changes the size of an image by increasing or decreasing its dimensions proportionally. It is essentially resizing with a focus on maintaining the aspect ratio.
+                
+                *How It Works*: Scaling works by multiplying the original dimensions (width and height) by a scaling factor:
+                ```
+                New Width = Original Width × Scale Factor
+                New Height = Original Height × Scale Factor
+                ```
+                *Types*:
+                - *Upscaling*: Enlarging the image (e.g., doubling its size).
+                - *Downscaling*: Reducing the image size (e.g., halving its size).
+                
+                *Use Case*: Scaling is used to make images smaller for faster processing or larger for better visibility without worrying about exact dimensions.
+                """)
         fx, fy = st.slider("Scaling Factors (fx, fy)", 0.1, 2.0, (1.0, 1.0))
         scaled_image = cv2.resize(image, None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
         
