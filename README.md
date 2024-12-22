@@ -4,6 +4,8 @@
 
 This application provides an interactive interface for performing basic image processing operations using OpenCV. It is built with Streamlit, allowing users to upload images, apply various transformations, and view results in real time. The app is designed for educational purposes, experimentation, and prototyping image manipulation tasks.
 
+---
+
 ### Features
 
 #### 1. Basic Analysis
@@ -37,7 +39,7 @@ Apply smoothing techniques:
 - Adjust parameters using sliders and drop-downs.
 - Compare original and processed images side by side.
 
-# ---
+---
 
 ### Installation
 
@@ -56,7 +58,7 @@ Run the app:
 
 `streamlit run app.py`
 
-# ---
+---
 
 ### Usage
 
@@ -70,7 +72,7 @@ Navigate through pages to explore different image processing functionalities:
 
 Adjust settings via sliders and options to see real-time results.
 
-# ---
+---
 
 ### Web Page
 
@@ -84,7 +86,7 @@ Adjust settings via sliders and options to see real-time results.
 
 *Fig. 2. Image transformation through horizontal flipping*
 
-## ---
+---
 
 ### Author
 
