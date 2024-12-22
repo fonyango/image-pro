@@ -42,7 +42,7 @@ mdurl==0.1.2
 narwhals==1.18.4
 nest-asyncio==1.6.0
 numpy==2.2.0
-opencv-python-headless==4.10.0.84
+opencv-python-headless
 packaging==24.2
 pandas==2.2.3
 parso==0.8.4
