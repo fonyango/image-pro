@@ -56,6 +56,8 @@ Run the app:
 
 `streamlit run app.py`
 
+# ---
+
 ### Usage
 
 Upload an image **(JPG, PNG, or JPEG format)** through the sidebar.
@@ -68,17 +70,21 @@ Navigate through pages to explore different image processing functionalities:
 
 Adjust settings via sliders and options to see real-time results.
 
+# ---
+
 ### Web Page
 
 [Image Pro](https://image-master.streamlit.app/)
 
-![image-pro-page](../../img/image-pro.png)
+![image-pro-page](img/image-pro.png)
 
 *Fig. 1. Landing page*
 
-![flip-image-page](../../img/flip-image.png)
+![flip-image-page](img/flip-image.png)
 
 *Fig. 2. Image transformation through flipping*
+
+# ---
 
 ### Author
 
