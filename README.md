@@ -37,6 +37,8 @@ Apply smoothing techniques:
 - Adjust parameters using sliders and drop-downs.
 - Compare original and processed images side by side.
 
+# ---
+
 ### Installation
 
 Clone the repository:
@@ -66,17 +68,20 @@ Navigate through pages to explore different image processing functionalities:
 
 Adjust settings via sliders and options to see real-time results.
 
+### Web Page
+
 [Image Pro](https://image-master.streamlit.app/)
 
-![image-pro-page](../img/image-pro.png)
+![image-pro-page](../../img/image-pro.png)
 
 *Fig. 1. Landing page*
 
-![flip-image-page](../img/flip-image.png)
+![flip-image-page](../../img/flip-image.png)
 
 *Fig. 2. Image transformation through flipping*
 
 ### Author
 
 Developed by **Francis Onyango**.
+
 Feel free to reach out for collaborations or feedback! 😊
