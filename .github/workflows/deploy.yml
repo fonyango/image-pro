@@ -34,4 +34,4 @@ jobs:
           STREAMLIT_DEPLOY_ENV: "prod"
         run: |
           echo "Deploying to Production"
-          streamlit run src/app.py
+          timeout 60 streamlit run src/app.py 
