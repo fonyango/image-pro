@@ -90,6 +90,6 @@ Adjust settings via sliders and options to see real-time results.
 
 ### Author
 
-Developed by **Francis Onyango**.
+Developed by [**Francis Onyango**](https://www.linkedin.com/in/francis-onyango-70825b1a9/).
 
 Feel free to reach out for collaborations or feedback! 😊
