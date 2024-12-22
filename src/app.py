@@ -45,7 +45,7 @@ if upload_file is not None:
 
 # Show error if no image is uploaded
 if st.session_state.image_data is None:
-    st.error("Please upload an image to proceed.")
+    st.info("Please upload an image to proceed.")
 else:
     # Display the image
     st.sidebar.image(st.session_state.image_data, caption="Uploaded Image", channels="BGR", use_container_width=True)
