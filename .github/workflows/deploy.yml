@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Log in to Docker Hub (replace with GitHub Container Registry if needed)
+      # Log in to Docker Hub 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -31,7 +31,7 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/streamlit-app:latest
 
-      # Deploy Docker container (optional, depends on your hosting platform)
+      # Deploy Docker container 
       - name: Deploy Docker Container
         run: |
           docker run -d -p 8501:8501 --name streamlit-app ${{ secrets.DOCKER_USERNAME }}/streamlit-app:latest
