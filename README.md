@@ -82,9 +82,9 @@ Adjust settings via sliders and options to see real-time results.
 
 ![flip-image-page](img/flip-image.png)
 
-*Fig. 2. Image transformation through flipping*
+*Fig. 2. Image transformation through horizontal flipping*
 
-# ---
+## ---
 
 ### Author
 
